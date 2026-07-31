@@ -16,15 +16,21 @@ export interface IPAnalysisResult {
 }
 
 export class InvalidIPError extends Error {
-  constructor(public readonly input: string) {
+  readonly input: string
+
+  constructor(input: string) {
     super(`Invalid IP address. Format: 192.168.1.1`)
     this.name = 'InvalidIPError'
+    this.input = input
   }
 }
 
 export class IPAnalysisFetchError extends Error {
-  constructor(public readonly ip: string) {
-    super('Failed to fetch IP analysis.')
+  readonly ip: string
+
+  constructor(ip: string) {
+    super('Failed to fetch. Retry?')
     this.name = 'IPAnalysisFetchError'
+    this.ip = ip
   }
 }

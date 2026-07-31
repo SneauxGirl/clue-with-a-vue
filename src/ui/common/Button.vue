@@ -4,11 +4,13 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger'
 withDefaults(
   defineProps<{
     variant?: ButtonVariant
+    type?: 'button' | 'submit'
     disabled?: boolean
     ariaLabel?: string
   }>(),
   {
     variant: 'primary',
+    type: 'button',
     disabled: false,
     ariaLabel: undefined,
   },
@@ -26,7 +28,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
 
 <template>
   <button
-    type="button"
+    :type="type"
     :disabled="disabled"
     :aria-disabled="disabled"
     :aria-label="ariaLabel"
