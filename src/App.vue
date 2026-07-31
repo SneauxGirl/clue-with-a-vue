@@ -12,7 +12,7 @@
       <button
         type="button"
         aria-label="Confirm Tailwind styles are loading"
-        class="mt-4 rounded-md bg-risk-low px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+        class="mt-4 rounded-md bg-risk-low px-4 py-2 text-sm font-medium text-white transition duration-150 ease-out hover:bg-blue-700 active:scale-[0.97] active:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
       >
         Test button
       </button>
