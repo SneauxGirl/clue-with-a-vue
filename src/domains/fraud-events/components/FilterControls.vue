@@ -15,6 +15,7 @@ const OUTCOMES: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
 </script>
 
 <template>
+  <!-- TODO style: filter pills use text-xs — raise to typography floor (≥0.875rem captions / ≥1rem controls). -->
   <div class="flex flex-wrap items-center gap-4">
     <fieldset class="flex flex-wrap items-center gap-2">
       <legend class="sr-only">Filter by outcome</legend>

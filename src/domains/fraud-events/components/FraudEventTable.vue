@@ -31,6 +31,7 @@ function ariaSortFor(field: SortField): 'ascending' | 'descending' | 'none' {
 }
 
 const sortedEvents = computed(() => sortEvents(props.events, sort.value))
+// TODO ux: when a parent filter is active, show "N of M events" (pass total or unfiltered count) so metrics don't look like the full set.
 const metrics = computed(() => calculateRiskMetrics(props.events))
 const groups = computed(() => (props.groupByCategory ? groupEventsByCategory(sortedEvents.value) : null))
 
@@ -41,11 +42,14 @@ function formatTimestamp(iso: string): string {
 
 <template>
   <div class="flex flex-col gap-3">
+    <!-- TODO accessibility: aria-live="polite" on this summary so filter/sort changes are announced. -->
     <p class="text-sm text-slate-400">
       {{ metrics.total }} events — {{ metrics.byOutcome.allowed }} allowed, {{ metrics.byOutcome.challenged }} challenged,
       {{ metrics.byOutcome.blocked }} blocked. Avg risk score {{ metrics.averageRiskScore }}.
     </p>
 
+    <!-- TODO accessibility: keyboard users can't scroll this region — add tabindex="0", role="region", aria-label. -->
+    <!-- TODO style: table body uses text-sm / mono text-xs — raise to typography floors in the styles pass. -->
     <div class="overflow-x-auto rounded-lg border border-surface-border">
       <table class="w-full text-left text-sm">
         <thead class="border-b border-surface-border bg-surface-raised text-xs uppercase text-slate-400">

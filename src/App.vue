@@ -21,12 +21,26 @@ const groupByCategory = ref(false)
 const analysisQuery = useIPAnalysis(searchedIP)
 const eventsQuery = useFraudEvents(searchedIP)
 
+// TODO ux: isLoading is false on Retry after error (query no longer pending) — use
+// isFetching when there is no success data so the spinner shows during refetch.
 const isLoading = computed(() => analysisQuery.isLoading.value || eventsQuery.isLoading.value)
 const errorMessage = computed(() => analysisQuery.error.value?.message ?? eventsQuery.error.value?.message ?? null)
 const hasSearched = computed(() => searchedIP.value !== '')
-const filteredEvents = computed(() => filterEventsByOutcome(eventsQuery.data.value ?? [], outcomeFilter.value))
+const filteredEvents = computed(() =>
+  filterEventsByOutcome(eventsQuery.data.value?.events ?? [], outcomeFilter.value),
+)
+
+// Same `asOf` the fetch used to stamp event timestamps — not TanStack's
+// dataUpdatedAt, so the chart window matches the dataset (live API: map
+// server windowEnd → asOf in the fetch adapter).
+const timelineAnchor = computed(() => eventsQuery.data.value?.asOf ?? Date.now())
 
 function handleSearch(ip: string) {
+  // New investigation → clear view filters. Same IP again keeps them.
+  if (ip !== searchedIP.value) {
+    outcomeFilter.value = null
+    groupByCategory.value = false
+  }
   searchedIP.value = ip
 }
 
@@ -55,7 +69,7 @@ function handleRetry() {
         <IPSummaryCards :analysis="analysisQuery.data.value" />
 
         <Card>
-          <EventTimeline :events="filteredEvents" />
+          <EventTimeline :events="filteredEvents" :now="timelineAnchor" />
         </Card>
 
         <Card>
@@ -67,6 +81,7 @@ function handleRetry() {
               @update:group-by-category="groupByCategory = $event"
             />
             <FraudEventTable :events="filteredEvents" :group-by-category="groupByCategory" />
+            <!-- TODO ux: empty state when filteredEvents.length === 0 (filter matched nothing). -->
           </div>
         </Card>
       </template>

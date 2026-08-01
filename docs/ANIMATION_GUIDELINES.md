@@ -1,9 +1,7 @@
 # Animation Guidelines
 
-This project does **not** ban animation. It uses purposeful, performant motion per
-the playbook below (distilled from Emil Kowalski's design engineering philosophy,
-[emilkowal.ski](https://emilkowal.ski/)). This supersedes the original build
-prompt's "No animations" constraint.
+This project uses purposeful animations per Emil Kowalski's design engineering philosophy 
+[emilkowal.ski](https://emilkowal.ski/) and skills repo.
 
 Values here are exact and should be copied, not approximated, when implementing
 components.

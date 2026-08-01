@@ -40,3 +40,33 @@ export interface RiskMetrics {
   byOutcome: Record<Outcome, number>
   byCategory: Record<Category, number>
 }
+
+/**
+ * One hour of the timeline. `hourEnd` is the epoch ms upper bound of the span this
+ * bucket counts, and doubles as its axis label; formatting is the chart's job.
+ */
+export interface HourBucket {
+  hourEnd: number
+  allowed: number
+  challenged: number
+  blocked: number
+}
+
+/**
+ * Events payload for one IP lookup. `asOf` is the epoch-ms end of the 24h window —
+ * event timestamps and the timeline chart both use it (mock and live API alike).
+ */
+export interface FraudEventsResult {
+  asOf: number
+  events: FraudEvent[]
+}
+
+export class FraudEventsFetchError extends Error {
+  readonly ip: string
+
+  constructor(ip: string) {
+    super('Failed to fetch. Retry?')
+    this.name = 'FraudEventsFetchError'
+    this.ip = ip
+  }
+}

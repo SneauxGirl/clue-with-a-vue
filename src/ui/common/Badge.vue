@@ -32,6 +32,7 @@ const DOT_CLASSES: Record<BadgeTone, string> = {
 </script>
 
 <template>
+  <!-- TODO style: badge uses text-xs — raise to caption floor (≥0.875rem) in the styles pass. -->
   <span
     :class="[
       'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium',

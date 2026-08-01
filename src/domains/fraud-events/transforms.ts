@@ -1,7 +1,13 @@
-import type { Category, CategoryGroup, FraudEvent, Outcome, RiskMetrics, SortState } from './types'
+import type { Category, CategoryGroup, FraudEvent, HourBucket, Outcome, RiskMetrics, SortState } from './types'
+
+// TODO test: add Vitest coverage for filterEventsByOutcome, sortEvents, groupEventsByCategory,
+// bucketEventsByHour (fixed `now`), and calculateRiskMetrics — these are pure and already now-parameterized.
 
 const CATEGORY_ORDER: readonly Category[] = ['login', 'signup', 'payment', 'password-reset']
 const OUTCOME_ORDER: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
+
+const HOUR_MS = 3_600_000
+const TIMELINE_HOURS = 24
 
 export function filterEventsByOutcome(events: FraudEvent[], outcome: Outcome | null): FraudEvent[] {
   if (outcome === null) return events
@@ -33,6 +39,30 @@ export function groupEventsByCategory(events: FraudEvent[]): CategoryGroup[] {
     const categoryEvents = groups.get(category) ?? []
     return { category, events: categoryEvents, count: categoryEvents.length }
   }).filter((group) => group.count > 0)
+}
+
+/**
+ * Buckets events into the 24 hours ending at `now`, oldest first.
+ *
+ * `now` is a parameter rather than a `Date.now()` call so the window is anchored
+ * by the caller to the payload's `asOf` (when the dataset's 24h window ended)
+ * instead of drifting with wall clock time while the page sits open.
+ */
+export function bucketEventsByHour(events: FraudEvent[], now: number): HourBucket[] {
+  const buckets: HourBucket[] = Array.from({ length: TIMELINE_HOURS }, (_, index) => ({
+    hourEnd: now - (TIMELINE_HOURS - 1 - index) * HOUR_MS,
+    allowed: 0,
+    challenged: 0,
+    blocked: 0,
+  }))
+
+  for (const event of events) {
+    const hoursAgo = Math.floor((now - new Date(event.timestamp).getTime()) / HOUR_MS)
+    if (hoursAgo < 0 || hoursAgo >= TIMELINE_HOURS) continue
+    buckets[TIMELINE_HOURS - 1 - hoursAgo][event.outcome] += 1
+  }
+
+  return buckets
 }
 
 export function calculateRiskMetrics(events: FraudEvent[]): RiskMetrics {

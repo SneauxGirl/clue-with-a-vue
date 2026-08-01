@@ -40,7 +40,9 @@ function formatDate(iso: string | null): string {
 
     <Card>
       <p class="text-xs font-medium text-slate-400">Location &amp; network</p>
-      <p class="mt-1 text-sm text-slate-200">{{ analysis.country }}</p>
+      <p class="mt-1 text-sm text-slate-200">
+        {{ analysis.city ? `${analysis.city}, ${analysis.country}` : analysis.country }}
+      </p>
       <p class="text-sm text-slate-400">{{ analysis.organization }}</p>
       <p class="font-mono text-xs text-slate-500">{{ analysis.asn }}</p>
     </Card>

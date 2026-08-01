@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { getShowcaseIPs } from '../../../config/mock-data'
 import Button from '../../../ui/common/Button.vue'
-import { isValidIPv4 } from '../services'
+import { isValidIPv4 } from '../../../shared/ip'
 
 withDefaults(defineProps<{ loading?: boolean }>(), { loading: false })
 const emit = defineEmits<{ search: [ip: string] }>()

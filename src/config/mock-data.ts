@@ -48,22 +48,28 @@ function riskLevelForScore(score: number): RiskLevel {
   return 'low'
 }
 
-const COUNTRIES = [
-  'United States',
-  'Germany',
-  'Netherlands',
-  'Brazil',
-  'India',
-  'Japan',
-  'Canada',
-  'United Kingdom',
-  'France',
-  'Singapore',
-  'Vietnam',
-  'Ukraine',
-  'Australia',
-  'Poland',
+/** Paired city/country — one IP has one GeoIP location; events reuse it. */
+const LOCATIONS = [
+  { city: 'Ashburn', country: 'United States' },
+  { city: 'Frankfurt', country: 'Germany' },
+  { city: 'Amsterdam', country: 'Netherlands' },
+  { city: 'Sao Paulo', country: 'Brazil' },
+  { city: 'Mumbai', country: 'India' },
+  { city: 'Tokyo', country: 'Japan' },
+  { city: 'Toronto', country: 'Canada' },
+  { city: 'London', country: 'United Kingdom' },
+  { city: 'Paris', country: 'France' },
+  { city: 'Singapore', country: 'Singapore' },
+  { city: 'Ho Chi Minh City', country: 'Vietnam' },
+  { city: 'Kyiv', country: 'Ukraine' },
+  { city: 'Sydney', country: 'Australia' },
+  { city: 'Warsaw', country: 'Poland' },
 ] as const
+
+/** Display string matching what a live API adapter would format from city + country. */
+function formatGeolocation(city: string | null, country: string): string {
+  return city ? `${city}, ${country}` : country
+}
 
 const RESIDENTIAL_PROVIDERS = [
   { organization: 'Comcast Cable Communications', asn: 'AS7922' },
@@ -97,6 +103,7 @@ const SHOWCASE_IPS: Record<string, IPAnalysisResult> = {
     isProxy: false,
     isTor: false,
     country: 'United States',
+    city: 'Mountain View',
     abuseReportCount: 0,
     lastAbuseReportDate: null,
     isInDatacenter: true,
@@ -111,6 +118,7 @@ const SHOWCASE_IPS: Record<string, IPAnalysisResult> = {
     isProxy: false,
     isTor: false,
     country: 'Australia',
+    city: 'Sydney',
     abuseReportCount: 0,
     lastAbuseReportDate: null,
     isInDatacenter: true,
@@ -125,6 +133,7 @@ const SHOWCASE_IPS: Record<string, IPAnalysisResult> = {
     isProxy: true,
     isTor: false,
     country: 'Netherlands',
+    city: 'Amsterdam',
     abuseReportCount: 34,
     lastAbuseReportDate: '2026-07-27T14:12:00.000Z',
     isInDatacenter: true,
@@ -139,6 +148,7 @@ const SHOWCASE_IPS: Record<string, IPAnalysisResult> = {
     isProxy: true,
     isTor: true,
     country: 'Germany',
+    city: 'Frankfurt',
     abuseReportCount: 112,
     lastAbuseReportDate: '2026-07-30T02:41:00.000Z',
     isInDatacenter: true,
@@ -153,6 +163,7 @@ const SHOWCASE_IPS: Record<string, IPAnalysisResult> = {
     isProxy: true,
     isTor: false,
     country: 'Singapore',
+    city: 'Singapore',
     abuseReportCount: 6,
     lastAbuseReportDate: '2026-07-21T09:03:00.000Z',
     isInDatacenter: true,
@@ -191,6 +202,9 @@ export function generateIPAnalysis(ip: string): IPAnalysisResult {
   const isTor = riskLevel !== 'low' && rng() < riskFactor * 0.25
 
   const provider = isInDatacenter ? pick(rng, DATACENTER_PROVIDERS) : pick(rng, RESIDENTIAL_PROVIDERS)
+  const location = pick(rng, LOCATIONS)
+  // Occasional country-only resolution, as real GeoIP sometimes lacks a city.
+  const city = rng() < 0.1 ? null : location.city
   const abuseReportCount = Math.round(riskFactor * 80 + rng() * 15)
   const daysAgo = 1 + Math.floor(rng() * 60)
   const lastAbuseReportDate =
@@ -203,7 +217,8 @@ export function generateIPAnalysis(ip: string): IPAnalysisResult {
     isVPN,
     isProxy,
     isTor,
-    country: pick(rng, COUNTRIES),
+    country: location.country,
+    city,
     abuseReportCount,
     lastAbuseReportDate,
     isInDatacenter,
@@ -221,12 +236,11 @@ const USER_AGENTS = [
   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36',
 ] as const
 
-const CITIES = ['Ashburn', 'Frankfurt', 'Amsterdam', 'Sao Paulo', 'Mumbai', 'Tokyo', 'Toronto', 'London'] as const
-
 const BLOCK_REASONS = [
   'Known VPN/proxy IP',
   'Tor exit node',
   'Excessive failed attempts',
+  // TODO ux: "Impossible travel" is a multi-IP/user signal — drop or reword for this IP-scoped mock.
   'Impossible travel detected',
   'Device fingerprint mismatch',
   'Velocity abuse — multiple accounts',
@@ -234,12 +248,15 @@ const BLOCK_REASONS = [
   'Matched abuse blocklist ASN',
 ] as const
 
-/** Deterministic mock fraud events for the given IP + its analysis, over the last 24h. */
-export function generateFraudEvents(ip: string, analysis: IPAnalysisResult): FraudEvent[] {
+/** Deterministic mock fraud events for the given IP + analysis, over the 24h ending at `now`. */
+export function generateFraudEvents(
+  ip: string,
+  analysis: IPAnalysisResult,
+  now: number,
+): FraudEvent[] {
   const rng = createSeededRandom(hashString(`${ip}-events`))
   const count = 30 + Math.floor(rng() * 21)
   const riskFactor = analysis.fraudScore / 100
-  const now = Date.now()
 
   const events: FraudEvent[] = []
   for (let i = 0; i < count; i++) {
@@ -265,7 +282,7 @@ export function generateFraudEvents(ip: string, analysis: IPAnalysisResult): Fra
       outcome,
       riskScore,
       userAgent: pick(rng, USER_AGENTS),
-      geolocation: `${pick(rng, CITIES)}, ${analysis.country}`,
+      geolocation: formatGeolocation(analysis.city, analysis.country),
       reason,
     })
   }

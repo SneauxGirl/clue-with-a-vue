@@ -5,47 +5,39 @@ import * as echarts from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
 import { computed } from 'vue'
 import VChart from 'vue-echarts'
+import { bucketEventsByHour } from '../transforms'
 import type { FraudEvent } from '../types'
 
 echarts.use([BarChart, GridComponent, LegendComponent, TooltipComponent, CanvasRenderer])
 
-const props = defineProps<{ events: FraudEvent[] }>()
+/** `now` anchors the 24h window — same `asOf` from the events payload (see App.vue). */
+const props = defineProps<{ events: FraudEvent[]; now: number }>()
 
 const prefersReducedMotion =
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-interface HourBucket {
-  label: string
-  allowed: number
-  challenged: number
-  blocked: number
+const buckets = computed(() => bucketEventsByHour(props.events, props.now))
+
+function formatHour(epochMs: number): string {
+  return new Date(epochMs).toLocaleTimeString(undefined, { hour: 'numeric' })
 }
 
-const buckets = computed<HourBucket[]>(() => {
-  const now = Date.now()
-  const hours: HourBucket[] = Array.from({ length: 24 }, (_, i) => {
-    const hourStart = new Date(now - (23 - i) * 3_600_000)
-    return { label: hourStart.toLocaleTimeString(undefined, { hour: 'numeric' }), allowed: 0, challenged: 0, blocked: 0 }
-  })
-
-  for (const event of props.events) {
-    const hoursAgo = Math.floor((now - new Date(event.timestamp).getTime()) / 3_600_000)
-    if (hoursAgo < 0 || hoursAgo > 23) continue
-    hours[23 - hoursAgo][event.outcome] += 1
-  }
-
-  return hours
-})
+const anchorLabel = computed(() =>
+  new Date(props.now).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+)
 
 const option = computed(() => ({
   animation: !prefersReducedMotion,
+  // TODO style: read risk/surface tokens from CSS vars instead of hardcoding hex (tokens live in style.css).
+  // TODO style: legend overlaps x-axis labels and bar bottoms — give grid more bottom room and/or move
+  // legend above the plot (legend.top / grid.bottom) so items don't collide with each other or the axis.
   color: ['#2563eb', '#d97706', '#dc2626'],
   tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
   legend: { data: ['allowed', 'challenged', 'blocked'], textStyle: { color: '#cbd5e1' } },
   grid: { left: 40, right: 12, top: 36, bottom: 24 },
   xAxis: {
     type: 'category',
-    data: buckets.value.map((b) => b.label),
+    data: buckets.value.map((b) => formatHour(b.hourEnd)),
     axisLine: { lineStyle: { color: '#2a2e38' } },
     axisLabel: { color: '#94a3b8' },
   },
@@ -60,9 +52,15 @@ const option = computed(() => ({
 
 <template>
   <div>
-    <h2 class="mb-2 text-sm font-medium text-slate-300">Fraud events, last 24 hours</h2>
-    <div role="img" aria-label="Bar chart of fraud events per hour over the last 24 hours, broken down by outcome. The full data is also available in the event table below.">
-      <VChart :option="option" autoresize class="h-64 w-full" />
+    <h2 class="mb-2 text-sm font-medium text-slate-300">Fraud events — 24 hours to {{ anchorLabel }}</h2>
+    <div
+      role="img"
+      class="h-64 w-full"
+      :aria-label="`Bar chart of fraud events per hour for the 24 hours ending ${anchorLabel}, broken down by outcome. The full data is also available in the event table below.`"
+    >
+      <!-- TODO style: replace inline style with Tailwind classes (also eases a strict CSP style-src). -->
+      <!-- TODO performance: consider async import of vue-echarts / this component — chart dominates bundle weight. -->
+      <VChart :option="option" autoresize style="width: 100%; height: 100%" />
     </div>
   </div>
 </template>

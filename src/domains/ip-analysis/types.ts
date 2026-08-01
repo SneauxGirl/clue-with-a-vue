@@ -8,21 +8,13 @@ export interface IPAnalysisResult {
   isProxy: boolean
   isTor: boolean
   country: string
+  /** GeoIP city; null when the provider only has country-level resolution. */
+  city: string | null
   abuseReportCount: number
   lastAbuseReportDate: string | null
   isInDatacenter: boolean
   asn: string
   organization: string
-}
-
-export class InvalidIPError extends Error {
-  readonly input: string
-
-  constructor(input: string) {
-    super(`Invalid IP address. Format: 192.168.1.1`)
-    this.name = 'InvalidIPError'
-    this.input = input
-  }
 }
 
 export class IPAnalysisFetchError extends Error {
