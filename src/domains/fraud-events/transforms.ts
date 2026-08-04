@@ -26,6 +26,10 @@ export function sortEvents(events: FraudEvent[], sort: SortState): FraudEvent[] 
         return (OUTCOME_ORDER.indexOf(a.outcome) - OUTCOME_ORDER.indexOf(b.outcome)) * direction
       case 'riskScore':
         return (a.riskScore - b.riskScore) * direction
+      case 'geolocation':
+        return a.geolocation.localeCompare(b.geolocation) * direction
+      case 'reason':
+        return (a.reason ?? '').localeCompare(b.reason ?? '') * direction
     }
   })
 }

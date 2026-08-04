@@ -58,9 +58,7 @@ const option = computed(() => ({
       class="h-64 w-full"
       :aria-label="`Bar chart of fraud events per hour for the 24 hours ending ${anchorLabel}, broken down by outcome. The full data is also available in the event table below.`"
     >
-      <!-- TODO style: replace inline style with Tailwind classes (also eases a strict CSP style-src). -->
-      <!-- TODO performance: consider async import of vue-echarts / this component — chart dominates bundle weight. -->
-      <VChart :option="option" autoresize style="width: 100%; height: 100%" />
+      <VChart :option="option" autoresize class="h-full w-full" />
     </div>
   </div>
 </template>

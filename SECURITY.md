@@ -21,10 +21,9 @@ and are gone on refresh, by design.
 
 ## CSP
 
-<!-- TODO security: add vercel.json Content-Security-Policy before public deploy; test ECharts tooltip inline styles (report-only first). -->
-
-Set before deployment. Specifically, ECharts renders tooltips as DOM nodes with
-inline styles, so a strict `style-src` has to be tested, not assumed.
+CSP was not originally in scope for this project. When I decided to add it for deploy (Vercel header / `vercel.json`), the ECharts dependency flagged
+tooltips render as DOM nodes with inline styles, so a strict `style-src` without`'unsafe-inline'` fights the chart library. Workarounds exist
+(`tooltip.renderMode: 'richText'`, looser style policy, etc.), wremain outside the scope of the original intent, so I decided to flag in docs and ignore. This app does not deploy a CSP header because it is not CSP compliant.
 
 ## Non-goals
 

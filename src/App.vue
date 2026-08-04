@@ -21,14 +21,20 @@ const groupByCategory = ref(false)
 const analysisQuery = useIPAnalysis(searchedIP)
 const eventsQuery = useFraudEvents(searchedIP)
 
-// TODO ux: isLoading is false on Retry after error (query no longer pending) — use
-// isFetching when there is no success data so the spinner shows during refetch.
-const isLoading = computed(() => analysisQuery.isLoading.value || eventsQuery.isLoading.value)
+// Spinner for first load and for Retry after error (isLoading is false once a query
+// has settled with an error — isFetching && !data covers that refetch).
+const isLoading = computed(() => {
+  const analysisBusy =
+    analysisQuery.isLoading.value ||
+    (analysisQuery.isFetching.value && !analysisQuery.data.value)
+  const eventsBusy =
+    eventsQuery.isLoading.value || (eventsQuery.isFetching.value && !eventsQuery.data.value)
+  return analysisBusy || eventsBusy
+})
 const errorMessage = computed(() => analysisQuery.error.value?.message ?? eventsQuery.error.value?.message ?? null)
 const hasSearched = computed(() => searchedIP.value !== '')
-const filteredEvents = computed(() =>
-  filterEventsByOutcome(eventsQuery.data.value?.events ?? [], outcomeFilter.value),
-)
+const allEvents = computed(() => eventsQuery.data.value?.events ?? [])
+const filteredEvents = computed(() => filterEventsByOutcome(allEvents.value, outcomeFilter.value))
 
 // Same `asOf` the fetch used to stamp event timestamps — not TanStack's
 // dataUpdatedAt, so the chart window matches the dataset (live API: map
@@ -80,8 +86,19 @@ function handleRetry() {
               @update:outcome="outcomeFilter = $event"
               @update:group-by-category="groupByCategory = $event"
             />
-            <FraudEventTable :events="filteredEvents" :group-by-category="groupByCategory" />
-            <!-- TODO ux: empty state when filteredEvents.length === 0 (filter matched nothing). -->
+            <p
+              v-if="filteredEvents.length === 0"
+              class="rounded-lg border border-dashed border-surface-border p-6 text-center text-sm text-slate-400"
+            >
+              No events match this outcome filter.
+            </p>
+            <FraudEventTable
+              v-else
+              :events="filteredEvents"
+              :total-count="allEvents.length"
+              :outcome-filter="outcomeFilter"
+              :group-by-category="groupByCategory"
+            />
           </div>
         </Card>
       </template>

@@ -8,7 +8,9 @@ TanStack has come up in several conversations this week so I used this as an exc
 
 ## vue-echarts
 
-I chose vue-echarts over vue-chartjs for better customization and headroom, but that comes with a pricetag: echarts is roughly 200 kB gzipped of a 237 kB bundle on this one-page-wonder. The chart is the app, by weight. It's overkill on a demo, but the dependency pays for itself the moment project scope expands.
+I chose vue-echarts over vue-chartjs for better customization and headroom, but that comes with a pricetag: echarts is roughly 200 kB gzipped of a 237 kB bundle on this one-page-wonder. The chart is the app, by weight. It's overkill on a demo, but the dependency pays for itself the moment project scope expands. 
+
+CSP later surfaced another cost — ECharts DOM tooltips vs strict `style-src` — see [SECURITY.md](./SECURITY.md). The scope of this project is testing and experimental so I decided on a light CSP and keeping ECharts.
 
 ## Folder structure: domain-first, not type-first
 

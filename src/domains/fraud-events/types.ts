@@ -12,7 +12,7 @@ export interface FraudEvent {
   reason?: string
 }
 
-export type SortField = 'timestamp' | 'category' | 'riskScore' | 'outcome'
+export type SortField = 'timestamp' | 'category' | 'outcome' | 'riskScore' | 'geolocation' | 'reason'
 export type SortDirection = 'asc' | 'desc'
 
 export interface SortState {

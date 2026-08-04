@@ -240,8 +240,6 @@ const BLOCK_REASONS = [
   'Known VPN/proxy IP',
   'Tor exit node',
   'Excessive failed attempts',
-  // TODO ux: "Impossible travel" is a multi-IP/user signal — drop or reword for this IP-scoped mock.
-  'Impossible travel detected',
   'Device fingerprint mismatch',
   'Velocity abuse — multiple accounts',
   'Disposable email domain',
