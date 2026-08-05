@@ -36,7 +36,7 @@ const option = computed(() => {
   const riskLow = themeColor('--color-risk-low', '#00e7c6')
   const riskMedium = themeColor('--color-risk-medium', '#ffd93d')
   const riskHigh = themeColor('--color-risk-high', '#ff5a36')
-  const border = themeColor('--color-surface-border', '#24404e')
+  const border = themeColor('--color-surface-border', '#4a6d82')
   const label = themeColor('--color-text-muted', '#8aa5b4')
   const legend = themeColor('--color-text-secondary', '#bfd2dc')
   const tooltipBg = themeColor('--color-surface-card', '#12171b')

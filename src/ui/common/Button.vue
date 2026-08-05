@@ -19,9 +19,9 @@ withDefaults(
 defineEmits<{ click: [MouseEvent] }>()
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  // Outline: dark fill, accent border + label (ties to --color-focus).
+  // Outline primary: Watch cyan border, white label.
   primary:
-    'bg-surface text-focus border border-focus hover:bg-focus/10 active:bg-focus/15',
+    'bg-surface text-text border border-focus hover:bg-focus/10 active:bg-focus/15',
   secondary:
     'bg-surface-raised text-text border border-surface-border hover:bg-surface-elevated active:bg-surface-elevated',
   danger: 'bg-risk-high text-surface hover:brightness-110 active:brightness-90',

@@ -10,19 +10,19 @@
   --color-risk-medium: #ffd93d;
   --color-risk-high: #ff5a36;
   --color-risk-high-pill: #ff9a3a;
-  --color-risk-critical: #fb3457;
+  --color-risk-critical: #ff4d69;
 
   --color-risk-low-fg: #00e7c6;
   --color-risk-medium-fg: #ffd93d;
   --color-risk-high-fg: #ff5a36;
-  --color-risk-critical-fg: #fb3457;
+  --color-risk-critical-fg: #ff4d69;
 
   /* Chrome */
   --color-surface: #0a0a0a;
   --color-surface-raised: #12171b;
   --color-surface-card: #12171b;
   --color-surface-elevated: #15252f;
-  --color-surface-border: #24404e;
+  --color-surface-border: #4a6d82;
 
   --color-text: #f4f9fc;
   --color-text-secondary: #bfd2dc;
