@@ -1,6 +1,10 @@
 # Clue-With-A-Vue
 
-A fraud analyst dashboard in Vue with TypeScript and Tailwind, featuring vue-echarts. Focus on secure frontend architecture,and responsive, accessible data-heavy UI. Everything is mocked client-side, including backend-related cross-checks and error states.
+A fraud analyst dashboard in Vue with TypeScript and Tailwind, featuring vue-echarts. Focus on secure frontend architecture, and responsive, accessible data-heavy UI. Everything is mocked client-side, including backend-related cross-checks and error states.
+
+**Live demo:** [clue-with-a-vue.vercel.app](https://clue-with-a-vue.vercel.app/)
+
+![Clue-With-A-Vue dashboard](./docs/dashboard.png)
 
 ## Setup
 
@@ -13,6 +17,18 @@ Open the printed local URL and search an IP (try one of the quick picks for pres
 
 See [DECISIONS.md](./DECISIONS.md) for structural reasoning.
 See [SECURITY.md](./SECURITY.md) for the security patterns applied.
+
+## Scripts
+
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Typecheck (`vue-tsc`) and production build |
+| `npm run preview` | Serve the production build locally |
+| `npm test` | Run Vitest once (fraud-events transforms) |
+| `npm run test:watch` | Vitest in watch mode |
+| `npm run lint` | ESLint (Vue + TypeScript) |
+| `npm run format` | Prettier write across the repo |
+
+Unit tests live next to the code they cover (e.g. `src/domains/fraud-events/transforms.test.ts`).
 
 ## How to extend
 
@@ -34,6 +50,6 @@ from those fields (one IP → one place), matching a typical GeoIP + events API.
   [DECISIONS.md](./DECISIONS.md).
 - IPv4 only; IPv6 input is rejected with the same validation message.
 
-## For more information
+## Credit
 
-Contact the designer: hjhugo.com
+Designed and developed by Heather Hugo 2026, tooled using VC Code and AI (Chat, Claude, Cursor)

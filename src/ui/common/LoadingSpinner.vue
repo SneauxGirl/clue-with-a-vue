@@ -16,6 +16,5 @@ withDefaults(defineProps<{ label?: string }>(), {
       <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
     </svg>
     <span class="text-lg">{{ label }}</span>
-    <span class="sr-only">{{ label }}, please wait.</span>
   </div>
 </template>
