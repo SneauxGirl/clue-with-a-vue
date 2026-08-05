@@ -67,7 +67,7 @@ function handleRetry() {
 
       <ErrorAlert v-else-if="errorMessage" :message="errorMessage" retryable @retry="handleRetry" />
 
-      <p v-else-if="!hasSearched" class="rounded-lg border border-dashed border-surface-border p-8 text-center text-sm text-slate-400">
+      <p v-else-if="!hasSearched" class="rounded-lg border border-dashed border-surface-border p-8 text-center text-lg text-text-secondary">
         Search an IP to see fraud events
       </p>
 
@@ -88,7 +88,7 @@ function handleRetry() {
             />
             <p
               v-if="filteredEvents.length === 0"
-              class="rounded-lg border border-dashed border-surface-border p-6 text-center text-sm text-slate-400"
+              class="rounded-lg border border-dashed border-surface-border p-6 text-center text-lg text-text-secondary"
             >
               No events match this outcome filter.
             </p>

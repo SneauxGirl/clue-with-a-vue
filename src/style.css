@@ -1,18 +1,34 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Kedebideri', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Michroma', system-ui, sans-serif;
   --font-mono: ui-monospace, 'SFMono-Regular', Consolas, monospace;
 
-  /* Risk/outcome palette: distinguished by both hue AND label/icon, never color alone. */
-  --color-risk-low: #2563eb;
-  --color-risk-medium: #d97706;
-  --color-risk-high: #dc2626;
-  --color-risk-critical: #7c3aed;
+  /* Status accents (Normal → Critical). Hue + label, never color alone. */
+  --color-risk-low: #00e7c6;
+  --color-risk-medium: #ffd93d;
+  --color-risk-high: #ff5a36;
+  --color-risk-high-pill: #ff9a3a;
+  --color-risk-critical: #fb3457;
 
-  --color-surface: #0f1115;
-  --color-surface-raised: #171a21;
-  --color-surface-border: #2a2e38;
+  --color-risk-low-fg: #00e7c6;
+  --color-risk-medium-fg: #ffd93d;
+  --color-risk-high-fg: #ff5a36;
+  --color-risk-critical-fg: #fb3457;
+
+  /* Chrome */
+  --color-surface: #0a0a0a;
+  --color-surface-raised: #12171b;
+  --color-surface-card: #12171b;
+  --color-surface-elevated: #15252f;
+  --color-surface-border: #24404e;
+
+  --color-text: #f4f9fc;
+  --color-text-secondary: #bfd2dc;
+  --color-text-muted: #8aa5b4;
+
+  --color-focus: #3cf7ff;
 
   /* Strong custom easings — built-in CSS easings read as too weak for deliberate UI motion. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -25,16 +41,37 @@
     color-scheme: dark;
   }
 
-  /* TODO style: set html/body/#app width, max-width, overflow-x: clip (root layout overflow defaults). */
-  /* TODO style: Inter is named in --font-sans but never loaded — add @fontsource or drop the name. */
-  /* TODO style: audit text-xs / text-sm against typography floors (body/controls/table ≥1rem, captions ≥0.875rem). */
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: clip;
+  }
+
+  /* Reserve scrollbar space so centered layout doesn't jump when results make the page scroll. */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  #app {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
 
   body {
-    @apply bg-surface text-slate-200 antialiased;
+    @apply bg-surface font-sans text-lg text-text antialiased;
+    font-family: var(--font-sans) !important;
+  }
+
+  header h1 {
+    font-family: var(--font-display) !important;
   }
 
   /* Visible focus ring on every interactive element; never removed without replacement. */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-blue-400;
+    @apply outline-2 outline-offset-2 outline-focus;
   }
 }

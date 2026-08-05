@@ -24,13 +24,13 @@ function formatDate(iso: string | null): string {
 <template>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <Card>
-      <p class="text-xs font-medium text-slate-400">Fraud score</p>
-      <p class="mt-1 text-3xl font-semibold text-white">{{ analysis.fraudScore }}<span class="text-base text-slate-500">/100</span></p>
+      <p class="text-base font-medium text-text-secondary">Fraud score</p>
+      <p class="mt-1 text-4xl font-semibold text-text">{{ analysis.fraudScore }}<span class="text-lg text-text-muted">/100</span></p>
       <Badge class="mt-2" :label="analysis.riskLevel" :tone="riskTone" />
     </Card>
 
     <Card>
-      <p class="text-xs font-medium text-slate-400">Risk signals</p>
+      <p class="text-base font-medium text-text-secondary">Risk signals</p>
       <ul class="mt-2 flex flex-wrap gap-2">
         <li v-for="signal in signals" :key="signal.label">
           <Badge :label="signal.label" :tone="signal.active ? 'high' : 'neutral'" />
@@ -39,18 +39,18 @@ function formatDate(iso: string | null): string {
     </Card>
 
     <Card>
-      <p class="text-xs font-medium text-slate-400">Location &amp; network</p>
-      <p class="mt-1 text-sm text-slate-200">
+      <p class="text-base font-medium text-text-secondary">Location &amp; network</p>
+      <p class="mt-1 text-lg text-text">
         {{ analysis.city ? `${analysis.city}, ${analysis.country}` : analysis.country }}
       </p>
-      <p class="text-sm text-slate-400">{{ analysis.organization }}</p>
-      <p class="font-mono text-xs text-slate-500">{{ analysis.asn }}</p>
+      <p class="text-lg text-text-secondary">{{ analysis.organization }}</p>
+      <p class="font-mono text-base text-text-muted">{{ analysis.asn }}</p>
     </Card>
 
     <Card>
-      <p class="text-xs font-medium text-slate-400">Abuse reports</p>
-      <p class="mt-1 text-3xl font-semibold text-white">{{ analysis.abuseReportCount }}</p>
-      <p class="text-sm text-slate-400">Last reported: {{ formatDate(analysis.lastAbuseReportDate) }}</p>
+      <p class="text-base font-medium text-text-secondary">Abuse reports</p>
+      <p class="mt-1 text-4xl font-semibold text-text">{{ analysis.abuseReportCount }}</p>
+      <p class="text-base text-text-secondary">Last reported: {{ formatDate(analysis.lastAbuseReportDate) }}</p>
     </Card>
   </div>
 </template>

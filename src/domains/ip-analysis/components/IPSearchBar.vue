@@ -30,7 +30,7 @@ function handleQuickPick(ip: string) {
 
 <template>
   <form class="flex flex-col gap-2" @submit.prevent="handleSubmit">
-    <label for="ip-search" class="text-sm font-medium text-slate-300">Search IP address</label>
+    <label for="ip-search" class="text-base font-medium text-text-secondary">Search IP address</label>
     <div class="flex flex-col gap-2 sm:flex-row">
       <input
         id="ip-search"
@@ -41,23 +41,23 @@ function handleQuickPick(ip: string) {
         placeholder="192.168.1.1"
         :aria-invalid="error !== null"
         :aria-describedby="error ? 'ip-search-error' : undefined"
-        class="w-full rounded-md border border-surface-border bg-surface px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus-visible:border-blue-400"
+        class="w-full rounded-md border border-surface-border bg-surface px-3 py-2 text-lg text-text placeholder:text-text-muted focus-visible:border-focus"
       />
       <Button type="submit" :disabled="loading" aria-label="Search fraud data for this IP address">
         {{ loading ? 'Searching…' : 'Search' }}
       </Button>
     </div>
-    <p v-if="error" id="ip-search-error" role="alert" class="text-sm text-red-300">
+    <p v-if="error" id="ip-search-error" role="alert" class="text-lg text-risk-high-fg">
       {{ error }}
     </p>
     <div class="flex flex-wrap items-center gap-2 pt-1">
-      <span class="text-xs text-slate-400">Try:</span>
+      <span class="text-base text-text-secondary">Try:</span>
       <button
         v-for="ip in showcaseIPs"
         :key="ip"
         type="button"
         :aria-label="`Search showcase IP ${ip}`"
-        class="rounded-md border border-surface-border px-2 py-1 font-mono text-xs text-slate-400 transition duration-150 ease-out hover:border-blue-400 hover:text-slate-200 active:scale-[0.97]"
+        class="rounded-md border border-surface-border px-2 py-1 font-mono text-base text-text-secondary transition duration-150 ease-out hover:border-focus hover:text-text active:scale-[0.97]"
         @click="handleQuickPick(ip)"
       >
         {{ ip }}

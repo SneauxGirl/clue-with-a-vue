@@ -76,19 +76,18 @@ function formatTimestamp(iso: string): string {
 
 <template>
   <div class="flex flex-col gap-3">
-    <p class="text-sm text-slate-400" aria-live="polite">
+    <p class="text-lg text-text-secondary" aria-live="polite">
       {{ eventCountLabel }} — {{ summaryDetail }}. Avg risk score {{ metrics.averageRiskScore }}.
     </p>
 
-    <!-- TODO style: table body uses text-sm / mono text-xs — raise to typography floors in the styles pass. -->
     <div
       class="overflow-x-auto rounded-lg border border-surface-border"
       role="region"
       aria-label="Fraud events table"
       tabindex="0"
     >
-      <table class="w-full border-collapse text-left text-sm">
-        <thead class="border-b border-surface-border bg-surface-raised text-xs text-slate-400">
+      <table class="w-full border-collapse text-left text-lg">
+        <thead class="border-b border-surface-border bg-surface-raised text-base text-text-secondary">
           <tr>
             <th
               v-for="col in COLUMNS"
@@ -99,7 +98,7 @@ function formatTimestamp(iso: string): string {
             >
               <button
                 type="button"
-                class="inline-flex w-full items-center gap-1 px-3 py-2 text-left transition duration-150 ease-out hover:text-slate-200 active:scale-[0.97]"
+                class="inline-flex w-full items-center gap-1 px-3 py-2 text-left transition duration-150 ease-out hover:text-text active:scale-[0.97] focus-visible:outline-offset-[-2px]"
                 :aria-label="`Sort by ${col.label}`"
                 @click="toggleSort(col.field)"
                 @focus="focusedField = col.field"
@@ -116,28 +115,28 @@ function formatTimestamp(iso: string): string {
         <template v-if="groups">
           <tbody v-for="group in groups" :key="group.category">
             <tr class="bg-surface-raised/60">
-              <th scope="rowgroup" colspan="6" class="px-3 py-1.5 text-left text-xs font-semibold capitalize text-slate-300">
+              <th scope="rowgroup" colspan="6" class="px-3 py-1.5 text-left text-base font-semibold capitalize text-text-secondary">
                 {{ group.category }} ({{ group.count }})
               </th>
             </tr>
             <tr v-for="event in group.events" :key="event.id" class="border-b border-surface-border last:border-0">
-              <td class="px-3 py-2 font-mono text-xs text-slate-300">{{ formatTimestamp(event.timestamp) }}</td>
-              <td class="px-3 py-2 capitalize text-slate-300">{{ event.category }}</td>
+              <td class="px-3 py-2 font-mono text-base text-text-muted">{{ formatTimestamp(event.timestamp) }}</td>
+              <td class="px-3 py-2 capitalize text-text">{{ event.category }}</td>
               <td class="px-3 py-2"><Badge :label="event.outcome" :tone="event.outcome" /></td>
-              <td class="px-3 py-2 text-slate-300">{{ event.riskScore }}</td>
-              <td class="px-3 py-2 text-slate-400">{{ event.geolocation }}</td>
-              <td class="px-3 py-2 text-slate-400">{{ event.reason ?? '—' }}</td>
+              <td class="px-3 py-2 text-text">{{ event.riskScore }}</td>
+              <td class="px-3 py-2 text-text">{{ event.geolocation }}</td>
+              <td class="px-3 py-2 text-text-muted">{{ event.reason ?? '—' }}</td>
             </tr>
           </tbody>
         </template>
         <tbody v-else>
           <tr v-for="event in sortedEvents" :key="event.id" class="border-b border-surface-border last:border-0">
-            <td class="px-3 py-2 font-mono text-xs text-slate-300">{{ formatTimestamp(event.timestamp) }}</td>
-            <td class="px-3 py-2 capitalize text-slate-300">{{ event.category }}</td>
+            <td class="px-3 py-2 font-mono text-base text-text-muted">{{ formatTimestamp(event.timestamp) }}</td>
+            <td class="px-3 py-2 capitalize text-text">{{ event.category }}</td>
             <td class="px-3 py-2"><Badge :label="event.outcome" :tone="event.outcome" /></td>
-            <td class="px-3 py-2 text-slate-300">{{ event.riskScore }}</td>
-            <td class="px-3 py-2 text-slate-400">{{ event.geolocation }}</td>
-            <td class="px-3 py-2 text-slate-400">{{ event.reason ?? '—' }}</td>
+            <td class="px-3 py-2 text-text">{{ event.riskScore }}</td>
+            <td class="px-3 py-2 text-text">{{ event.geolocation }}</td>
+            <td class="px-3 py-2 text-text-muted">{{ event.reason ?? '—' }}</td>
           </tr>
         </tbody>
       </table>

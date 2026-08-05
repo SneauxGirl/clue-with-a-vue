@@ -26,33 +26,61 @@ const anchorLabel = computed(() =>
   new Date(props.now).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
 )
 
-const option = computed(() => ({
-  animation: !prefersReducedMotion,
-  // TODO style: read risk/surface tokens from CSS vars instead of hardcoding hex (tokens live in style.css).
-  // TODO style: legend overlaps x-axis labels and bar bottoms — give grid more bottom room and/or move
-  // legend above the plot (legend.top / grid.bottom) so items don't collide with each other or the axis.
-  color: ['#2563eb', '#d97706', '#dc2626'],
-  tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-  legend: { data: ['allowed', 'challenged', 'blocked'], textStyle: { color: '#cbd5e1' } },
-  grid: { left: 40, right: 12, top: 36, bottom: 24 },
-  xAxis: {
-    type: 'category',
-    data: buckets.value.map((b) => formatHour(b.hourEnd)),
-    axisLine: { lineStyle: { color: '#2a2e38' } },
-    axisLabel: { color: '#94a3b8' },
-  },
-  yAxis: { type: 'value', axisLabel: { color: '#94a3b8' }, splitLine: { lineStyle: { color: '#2a2e38' } } },
-  series: [
-    { name: 'allowed', type: 'bar', stack: 'total', data: buckets.value.map((b) => b.allowed) },
-    { name: 'challenged', type: 'bar', stack: 'total', data: buckets.value.map((b) => b.challenged) },
-    { name: 'blocked', type: 'bar', stack: 'total', data: buckets.value.map((b) => b.blocked) },
-  ],
-}))
+function themeColor(varName: string, fallback: string): string {
+  if (typeof window === 'undefined') return fallback
+  const value = getComputedStyle(document.documentElement).getPropertyValue(varName).trim()
+  return value || fallback
+}
+
+const option = computed(() => {
+  const riskLow = themeColor('--color-risk-low', '#00e7c6')
+  const riskMedium = themeColor('--color-risk-medium', '#ffd93d')
+  const riskHigh = themeColor('--color-risk-high', '#ff5a36')
+  const border = themeColor('--color-surface-border', '#24404e')
+  const label = themeColor('--color-text-muted', '#8aa5b4')
+  const legend = themeColor('--color-text-secondary', '#bfd2dc')
+  const tooltipBg = themeColor('--color-surface-card', '#12171b')
+  const tooltipText = themeColor('--color-text', '#f4f9fc')
+
+  return {
+    animation: !prefersReducedMotion,
+    color: [riskLow, riskMedium, riskHigh],
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' },
+      backgroundColor: tooltipBg,
+      borderColor: border,
+      textStyle: { color: tooltipText, fontSize: 16 },
+    },
+    legend: {
+      data: ['allowed', 'challenged', 'blocked'],
+      top: 0,
+      textStyle: { color: legend, fontSize: 18 },
+    },
+    grid: { left: 40, right: 12, top: 44, bottom: 36 },
+    xAxis: {
+      type: 'category',
+      data: buckets.value.map((b) => formatHour(b.hourEnd)),
+      axisLine: { lineStyle: { color: border } },
+      axisLabel: { color: label, fontSize: 16 },
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: label, fontSize: 16 },
+      splitLine: { lineStyle: { color: border } },
+    },
+    series: [
+      { name: 'allowed', type: 'bar', stack: 'total', data: buckets.value.map((b) => b.allowed) },
+      { name: 'challenged', type: 'bar', stack: 'total', data: buckets.value.map((b) => b.challenged) },
+      { name: 'blocked', type: 'bar', stack: 'total', data: buckets.value.map((b) => b.blocked) },
+    ],
+  }
+})
 </script>
 
 <template>
   <div>
-    <h2 class="mb-2 text-sm font-medium text-slate-300">Fraud events — 24 hours to {{ anchorLabel }}</h2>
+    <h2 class="mb-2 text-lg font-medium text-text-secondary">Fraud events — 24 hours to {{ anchorLabel }}</h2>
     <div
       role="img"
       class="h-64 w-full"

@@ -15,7 +15,6 @@ const OUTCOMES: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
 </script>
 
 <template>
-  <!-- TODO style: filter pills use text-xs — raise to typography floor (≥0.875rem captions / ≥1rem controls). -->
   <div class="flex flex-wrap items-center gap-4">
     <fieldset class="flex flex-wrap items-center gap-2">
       <legend class="sr-only">Filter by outcome</legend>
@@ -23,8 +22,8 @@ const OUTCOMES: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
         type="button"
         :aria-pressed="outcome === null"
         :class="[
-          'rounded-full px-3 py-1 text-xs font-medium transition duration-150 ease-out active:scale-[0.97]',
-          outcome === null ? 'bg-slate-200 text-slate-900' : 'bg-surface-raised text-slate-300 border border-surface-border hover:border-slate-500',
+          'rounded-full px-3 py-1 text-lg font-medium transition duration-150 ease-out active:scale-[0.97]',
+          outcome === null ? 'bg-surface-elevated text-text border border-surface-border' : 'bg-surface-raised text-text-secondary border border-surface-border hover:border-text-muted hover:bg-surface-elevated',
         ]"
         @click="emit('update:outcome', null)"
       >
@@ -36,8 +35,8 @@ const OUTCOMES: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
         type="button"
         :aria-pressed="outcome === value"
         :class="[
-          'rounded-full px-3 py-1 text-xs font-medium capitalize transition duration-150 ease-out active:scale-[0.97]',
-          outcome === value ? 'bg-slate-200 text-slate-900' : 'bg-surface-raised text-slate-300 border border-surface-border hover:border-slate-500',
+          'rounded-full px-3 py-1 text-lg font-medium capitalize transition duration-150 ease-out active:scale-[0.97]',
+          outcome === value ? 'bg-surface-elevated text-text border border-surface-border' : 'bg-surface-raised text-text-secondary border border-surface-border hover:border-text-muted hover:bg-surface-elevated',
         ]"
         @click="emit('update:outcome', value)"
       >
@@ -45,11 +44,11 @@ const OUTCOMES: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
       </button>
     </fieldset>
 
-    <label class="flex items-center gap-2 text-sm text-slate-300">
+    <label class="flex items-center gap-2 text-lg text-text-secondary">
       <input
         type="checkbox"
         :checked="groupByCategory"
-        class="size-4 rounded border-surface-border bg-surface text-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+        class="size-4 rounded border-surface-border bg-surface text-risk-low focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         @change="emit('update:groupByCategory', ($event.target as HTMLInputElement).checked)"
       />
       Group by category

@@ -19,10 +19,12 @@ withDefaults(
 defineEmits<{ click: [MouseEvent] }>()
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
-  primary: 'bg-risk-low text-white hover:bg-blue-700 active:bg-blue-800',
+  // Outline: dark fill, accent border + label (ties to --color-focus).
+  primary:
+    'bg-surface text-focus border border-focus hover:bg-focus/10 active:bg-focus/15',
   secondary:
-    'bg-surface-raised text-slate-200 border border-surface-border hover:bg-slate-800 active:bg-slate-700',
-  danger: 'bg-risk-high text-white hover:bg-red-700 active:bg-red-800',
+    'bg-surface-raised text-text border border-surface-border hover:bg-surface-elevated active:bg-surface-elevated',
+  danger: 'bg-risk-high text-surface hover:brightness-110 active:brightness-90',
 }
 </script>
 
@@ -33,7 +35,7 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
     :aria-disabled="disabled"
     :aria-label="ariaLabel"
     :class="[
-      'inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium',
+      'inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-lg font-medium',
       'transition duration-150 ease-out active:scale-[0.97]',
       'disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100',
       VARIANT_CLASSES[variant],
