@@ -1,8 +1,5 @@
 import type { Category, CategoryGroup, FraudEvent, HourBucket, Outcome, RiskMetrics, SortState } from './types'
 
-// TODO test: add Vitest coverage for filterEventsByOutcome, sortEvents, groupEventsByCategory,
-// bucketEventsByHour (fixed `now`), and calculateRiskMetrics — these are pure and already now-parameterized.
-
 const CATEGORY_ORDER: readonly Category[] = ['login', 'signup', 'payment', 'password-reset']
 const OUTCOME_ORDER: readonly Outcome[] = ['allowed', 'challenged', 'blocked']
 
